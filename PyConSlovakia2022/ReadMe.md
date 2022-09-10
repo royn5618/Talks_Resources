@@ -1,4 +1,5 @@
-# PyCon SK 2022: Introduction to Text Analytics for Social Media Chatter
+# Introduction to Text Analytics for Social Media Chatter
+PyCon SK 2022, STU, Bratislava, Slovakia
 
 ## Resource Links
 
