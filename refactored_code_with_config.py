@@ -1,0 +1,62 @@
+import pandas as pd
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+import string
+
+# Download NLTK resources
+nltk.download('punkt')
+nltk.download('stopwords')
+
+
+class Config:
+    """
+    Configuration class for file paths, column names, and NLP resources.
+    """
+    CSV_PATH = 'data.csv'
+    TEXT_COLUMN = 'Text'
+    CLEANED_COLUMN = 'cleaned_text'
+    STOPWORDS = set(stopwords.words('english'))
+    PUNCTUATION = set(string.punctuation)
+
+
+def clean_text(text, stop_words, punctuation):
+    """
+    Cleans input text by:
+    - Lowercasing
+    - Tokenizing
+    - Removing stopwords and punctuation
+
+    Args:
+        text (str): Input text string.
+        stop_words (set): Set of stopwords.
+        punctuation (set): Set of punctuation characters.
+
+    Returns:
+        str: Cleaned and space-joined string.
+    """
+    tokens = word_tokenize(text.lower())
+    cleaned = [word for word in tokens if word not in stop_words and word not in punctuation]
+    return ' '.join(cleaned)
+
+
+def main():
+    try:
+        # Load data
+        df = pd.read_csv(Config.CSV_PATH)
+        if Config.TEXT_COLUMN not in df.columns:
+            raise KeyError(f"Column '{Config.TEXT_COLUMN}' not found in CSV.")
+
+        # Clean text using config
+        df[Config.CLEANED_COLUMN] = df[Config.TEXT_COLUMN].apply(
+            lambda t: clean_text(t, Config.STOPWORDS, Config.PUNCTUATION)
+        )
+
+        print(df[[Config.TEXT_COLUMN, Config.CLEANED_COLUMN]].head())
+
+    except Exception as e:
+        print(f"Error: {e}")
+
+
+if __name__ == "__main__":
+    main()
